@@ -1,18 +1,16 @@
 package main
 
 import (
-	
+	"fmt"
 	"net/http"
 	"encoding/json"
-	// "log"
-	// "math/rand"
-	// "strconv"
+	
 	"github.com/gorilla/mux"
 )
 
 // Model
 type Car struct{
-	No 		int 	`json:"no"`
+	No 		string 	`json:"no"`
 	Vin 	string 	`json:"vin"`
 	Model 	string 	`json:"model"`
 	Make 	string 	`json:"make"`
@@ -31,13 +29,53 @@ func getInventory(w http.ResponseWriter, r *http.Request){
 	json.NewEncoder(w).Encode(carData)
 }
 
+// Get Single Inventory data
+func getCar(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r) // Get params
+	for _, item := range carData {
+		if item.No == params["no"]{
+			json.NewEncoder(w).Encode(item)
+			return 
+		}
+	}
+	json.NewEncoder(w).Encode(&Car{})
+}
+
+func getCommission(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "<h1>Commission Page</h1>")
+}
+
+func getManageMarket(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "<h1>Manage Market Page</h1>")
+}
+
+func getManageCustomer(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "<h1>Manage Customer Page</h1>")
+}
+
+func getReportSetting(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, "<h1>Report Setting Page</h1>")
+}
+
+func notFound(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusNotFound)
+	fmt.Fprint(w, "<h1>Sorry, but we couldn't find the page</h1>")
+}
+
+
 func main() {
 	// Init Router
 	r := mux.NewRouter()
 
 	// Dummy Data
 	carData = append(carData, Car{
-		No: 1,
+		No: "1",
 		Vin: "MNBUMF050FW496402",
 		Model: "320i",
 		Make: "BMW",
@@ -48,7 +86,7 @@ func main() {
 		Listed: "n",
 	})
 	carData = append(carData, Car{
-		No: 2,
+		No: "2",
 		Vin: "4JDBLMF080FW468775",
 		Model: "Camry",
 		Make: "Toyota",
@@ -59,7 +97,7 @@ func main() {
 		Listed: "n",
 	})
 	carData = append(carData, Car{
-		No: 3,
+		No: "3",
 		Vin: "MNBUMF050FW496402",
 		Model: "320i",
 		Make: "BMW",
@@ -70,7 +108,7 @@ func main() {
 		Listed: "n",
 	})
 	carData = append(carData, Car{
-		No: 4,
+		No: "4",
 		Vin: "G3SBUMF080FW470449",
 		Model: "Civic",
 		Make: "Honda",
@@ -82,11 +120,13 @@ func main() {
 	})
 
 	// Route Handlers / Endpoints
+	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.HandleFunc("/inventory", getInventory).Methods("GET")
-	// r.HandleFunc("/commission", getCommission).Methods("GET")
-	// r.HandleFunc("/managemarket", getManageMarket).Methods("GET")
-	// r.HandleFunc("/managecustomer", getManageCustomer).Methods("GET")
-	// r.HandleFunc("/reportsetting", getReportSetting).Methods("GET")
+	r.HandleFunc("/inventory/{no}", getCar).Methods("GET")
+	r.HandleFunc("/commission", getCommission).Methods("GET")
+	r.HandleFunc("/managemarket", getManageMarket).Methods("GET")
+	r.HandleFunc("/managecustomer", getManageCustomer).Methods("GET")
+	r.HandleFunc("/reportsetting", getReportSetting).Methods("GET")
 	
 	http.ListenAndServe(":8080", r)
 }
