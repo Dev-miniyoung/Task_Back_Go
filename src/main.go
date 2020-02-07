@@ -20,9 +20,62 @@ type Inventory struct{
 	Listed 	string 	`json:"listed"`
 }
 
+var carData []Car
+
+// Get Inventory data
+func getInventory(w http.ResponseWriter, r *http.Request){
+
+}
+
 func main(){
 	// Init Router
 	r := mux.NewRouter()
+
+	// Dummy Data
+	carData = append(carData, Car{
+		No: "1",
+		Vin: "MNBUMF050FW496402",
+		Model: "320i",
+		Make: "BMW",
+		Year: "2014",
+		MSRP: "147,000",
+		Status: "ordered",
+		Booked: "y",
+		Listed: "n"
+	  })
+	carData = append(carData, Car{
+		No: "2",
+		Vin: "4JDBLMF080FW468775",
+		Model: "Camry",
+		Make: "Toyota",
+		Year: "2015",
+		MSRP: "120,000",
+		Status: "in stock",
+		Booked: "y",
+		Listed: "n"
+	  })
+	carData = append(carData, Car{
+		No: "1",
+		Vin: "MNBUMF050FW496402",
+		Model: "320i",
+		Make: "BMW",
+		Year: "2014",
+		MSRP: "147,000",
+		Status: "ordered",
+		Booked: "y",
+		Listed: "n"
+	  })
+	carData = append(carData, Car{
+		No: "4",
+		Vin: "G3SBUMF080FW470449",
+		Model: "Civic",
+		Make: "Honda",
+		Year: "2016",
+		MSRP: "140,000",
+		Status: "sold",
+		Booked: "n",
+		Listed: "n"
+	  })
 
 	// Route Handlers / Endpoints
 	r.HandleFunc("/inventory", getInventory).Methods("GET")
