@@ -24,7 +24,7 @@ type Car struct {
 var carData []Car
 
 // Get Inventory data
-func getInventoryView(w http.ResponseWriter, r *http.Request) {
+func getInventory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(carData)
 }
@@ -120,8 +120,8 @@ func main() {
 
 	// Route Handlers / Endpoints
 	r.NotFoundHandler = http.HandlerFunc(notFound)
-	r.HandleFunc("/views/inventory", getInventoryView).Methods("GET")
-	r.HandleFunc("/views/inventory/{no}", getCar).Methods("GET")
+	r.HandleFunc("/inventory", getInventory).Methods("GET")
+	r.HandleFunc("/inventory/{no}", getCar).Methods("GET")
 	r.HandleFunc("/views/commission", getCommissionView).Methods("GET")
 	r.HandleFunc("/views/managemarket", getManageMarketView).Methods("GET")
 	r.HandleFunc("/views/managecustomer", getManageCustomerView).Methods("GET")
